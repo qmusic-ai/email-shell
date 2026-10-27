@@ -42,7 +42,9 @@ Exports: `renderEmailShell`, `statusBanner`, `introBlock`, `introBlockHtml`,
 
 Date cards use the three-line form: pass `title` + `position` + `time` to
 `eventDetailCard()`. Passing only `subtitle` gives the legacy single-line card
-with no time on it.
+with no time on it. The right-hand zone takes either a `rate` or, since 1.1.0,
+a `logoUrl` (an image drawn for a light ground, 110px wide); the rate wins if
+both are passed.
 
 ## How to make a style change
 

@@ -76,6 +76,10 @@ export const cases = [
   card('card-stamp-struck', { title: 'The Ivy Room', subtitle: 'Cancelled', stampUrl: 'https://example.com/stamp.png?a=1&b=2', struck: true }),
   card('card-footnote', { title: 'The Ivy Room', position: 'DJ', time: '8:00 PM', footnoteHtml: '<strong>Weather:</strong> outdoor set' }),
   card('card-late', { title: 'The Ivy Room', position: 'DJ', time: '1:00 AM - 3:00 AM', late: true }),
+  // logoUrl is new in 1.1.0, so no pre-package copy has it (refs: []).
+  { name: 'card-logo', refs: [], render: (m) => m.eventDetailCard({ ...DATE, title: 'The Ivy Room', position: 'DJ', time: '8:00 PM - 11:00 PM', logoUrl: 'https://example.com/logo_ink.png?v=a&b=2', logoAlt: HOSTILE }) },
+  { name: 'card-logo-blank', refs: [], render: (m) => m.eventDetailCard({ ...DATE, title: 'The Ivy Room', position: 'DJ', time: '8:00 PM - 11:00 PM', logoUrl: '  ' }) },
+  { name: 'card-logo-with-rate', refs: [], render: (m) => m.eventDetailCard({ ...DATE, title: 'The Ivy Room', position: 'DJ', time: '8:00 PM - 11:00 PM', rate: '$1,200', logoUrl: 'https://example.com/logo_ink.png' }) },
   card('card-everything', {
     year: '2027', title: HOSTILE, position: HOSTILE, time: HOSTILE, timeHtml: '<b>1 AM</b>', subtitle: 'x', subtitleHtml: '<i>y</i>',
     rate: HOSTILE, rateColor: 'coral', stampUrl: HOSTILE, struck: true, footnoteHtml: '<em>note</em>', late: true,

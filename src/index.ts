@@ -375,6 +375,14 @@ export interface DetailCardInput extends DetailInfoInput {
   /** A late-night set (starts 12:00-4:59 AM, filed under the night before):
    * draws the LATE strip across the bottom of the date badge. See lateBadgeRow. */
   late?: boolean;
+  /** An image (a venue logo, say) in the right-hand zone where a rate would
+   * go: 110px wide, right-aligned, vertically centred, and on a phone it drops
+   * under a hairline like the rate does. Pass a version drawn for a light
+   * ground: the card is near-white. Ignored when `rate` is set; the rate zone
+   * holds one thing. */
+  logoUrl?: string;
+  /** Alt text for `logoUrl`, e.g. the venue name. */
+  logoAlt?: string;
 }
 
 /**
@@ -382,7 +390,7 @@ export interface DetailCardInput extends DetailInfoInput {
  * optional rate pinned to the right (the gig-alert shift-card layout). On mobile
  * the rate drops to its own right-aligned line under a hairline divider.
  */
-export function eventDetailCard({ month, day, weekday, year, title, subtitle, subtitleHtml, rate, rateColor = 'ink', rateValign = 'middle', rateSize = '24px', rateWidth = '100', stampUrl, struck, footnoteHtml, position, time, timeHtml, late }: DetailCardInput): string {
+export function eventDetailCard({ month, day, weekday, year, title, subtitle, subtitleHtml, rate, rateColor = 'ink', rateValign = 'middle', rateSize = '24px', rateWidth = '100', stampUrl, struck, footnoteHtml, position, time, timeHtml, late, logoUrl, logoAlt }: DetailCardInput): string {
   const dayStyle = `margin:0;font-size:34px;font-weight:800;line-height:1;color:${QM.ink};font-family:${FONT}` +
     (struck ? `;text-decoration:line-through;text-decoration-color:${QM.coralDark};text-decoration-thickness:3px` : '');
   // Rate zone styling. 'coral' matches the month accent (drop qm-ink so Outlook
@@ -420,8 +428,11 @@ export function eventDetailCard({ month, day, weekday, year, title, subtitle, su
                         </td>`;
   const venue = detailInfoCell({ title, position, time, timeHtml, subtitle, subtitleHtml });
 
-  // No rate -> simple two-zone row. Rate -> wrap date+venue in qm-detailcell and
-  // pin the amount in qm-ratecell (stacks on mobile via the responsive rules).
+  // No rate or logo -> simple two-zone row. Rate (or, failing that, a logo) ->
+  // wrap date+venue in qm-detailcell and pin it in qm-ratecell (stacks on
+  // mobile via the responsive rules; the logo reuses the rate's cell so the
+  // shell's CSS stays as it is).
+  const logo = (logoUrl ?? '').trim();
   const row = rate
     ? `
                       <tr>
@@ -430,6 +441,16 @@ export function eventDetailCard({ month, day, weekday, year, title, subtitle, su
                         </td>
                         <td class="qm-ratecell" valign="${rateValign}" align="right" width="${rateWidth}" style="width:${rateWidth}px;padding-left:10px">
                           <p class="${rateClass}" style="margin:0;font-size:${rateSize};font-weight:800;letter-spacing:-0.4px;line-height:1;white-space:nowrap;color:${rateHex};font-family:${FONT}">${esc(rate)}</p>
+                        </td>
+                      </tr>`
+    : logo
+    ? `
+                      <tr>
+                        <td class="qm-detailcell" valign="middle">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>${badge}${venue}</tr></table>
+                        </td>
+                        <td class="qm-ratecell" valign="middle" align="right" width="110" style="width:110px;padding-left:12px">
+                          <img src="${esc(logo)}" width="110" alt="${esc(logoAlt ?? '')}" style="display:inline-block;width:110px;max-width:110px;height:auto;border:0;outline:none;text-decoration:none">
                         </td>
                       </tr>`
     : `
